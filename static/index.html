@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L4 DDoS Mitigation Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+  <div class="glow-bg"></div>
+
+  <div class="dashboard-container">
+
+    <!-- Header -->
+    <header class="glass-panel main-header">
+      <div class="header-content">
+        <h1>L4 DDoS Mitigation Engine</h1>
+        <p>Real-time machine learning pipeline (Random Forest Classifier) simulating edge-scrubbing for multiplayer game
+          environments.</p>
+      </div>
+      <div class="status-indicator">
+        <div class="status-dot offline" id="model-status-dot"></div>
+        <span id="model-status-text">Engine Offline</span>
+      </div>
+    </header>
+
+    <div class="main-grid">
+
+      <!-- Training Controls & Metrics -->
+      <section class="left-panel">
+
+        <div class="glass-panel control-panel">
+          <h2>Orchestration Controls</h2>
+          <p class="subtitle">Initialize the brain before scrubbing traffic.</p>
+          <div class="button-group">
+            <button id="btn-train" class="primary-btn">Compute Hybrid Pipeline & Train</button>
+            <button id="btn-simulate" class="secondary-btn" disabled>Deploy eBPF Scrubbing Shield</button>
+          </div>
+          <div id="training-loader" class="loader hidden">
+            <div class="spinner"></div>
+            <span>Training on 5,000 synthetic flows...</span>
+          </div>
+        </div>
+
+        <div class="glass-panel metrics-panel">
+          <h2>Model Evaluation Thesis</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Overall Accuracy</span>
+              <span class="metric-value" id="val-accuracy">--%</span>
+            </div>
+            <div class="metric-card highlight-card">
+              <span class="metric-label">False Positive Rate (FPR)</span>
+              <span class="metric-value highlight-value" id="val-fpr">--%</span>
+              <p class="metric-caption">Proves legitimate players aren't dropped!</p>
+            </div>
+          </div>
+
+          <div class="confusion-matrix">
+            <h3>Confusion Matrix</h3>
+            <div class="cm-grid">
+              <div class="cm-cell placeholder">Actual \ Pred</div>
+              <div class="cm-cell header">Normal</div>
+              <div class="cm-cell header">DDoS</div>
+
+              <div class="cm-cell header">Normal</div>
+              <div class="cm-cell data tn" id="cm-tn">0</div>
+              <div class="cm-cell data fp" id="cm-fp">0</div>
+
+              <div class="cm-cell header">DDoS</div>
+              <div class="cm-cell data fn" id="cm-fn">0</div>
+              <div class="cm-cell data tp" id="cm-tp">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Simulation Stream -->
+      <section class="right-panel">
+        <div class="glass-panel simulation-panel">
+          <div class="sim-header">
+            <h2>Live Traffic Flow</h2>
+            <div class="live-pulse hidden" id="live-pulse">
+              <span>LIVE SCRUBBING</span>
+              <div class="pulse-ring"></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="traffic-table">
+              <thead>
+                <tr>
+                  <th>Packet #</th>
+                  <th>Size (B)</th>
+                  <th>Tick (ms)</th>
+                  <th>Variance</th>
+                  <th>Actual</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="traffic-stream-body">
+                <tr class="placeholder-row">
+                  <td colspan="6">Awaiting deployment...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="stats-bar">
+            <div class="stat"><span id="stat-passed">0</span> Passed</div>
+            <div class="stat"><span id="stat-dropped">0</span> Dropped</div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+
+</html>

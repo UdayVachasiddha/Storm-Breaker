@@ -1,0 +1,196 @@
+document.addEventListener("DOMContentLoaded", () => {
+    // Buttons & UI elements
+    const btnTrain = document.getElementById("btn-train");
+    const btnSimulate = document.getElementById("btn-simulate");
+    const loader = document.getElementById(" प्रशिक्षण-loader") || document.getElementById("training-loader");
+    const statusDot = document.getElementById("model-status-dot");
+    const statusText = document.getElementById("model-status-text");
+    const livePulse = document.getElementById("live-pulse");
+    
+    // Metrics
+    const valAcc = document.getElementById("val-accuracy");
+    const valFpr = document.getElementById("val-fpr");
+    const cmTn = document.getElementById("cm-tn");
+    const cmFp = document.getElementById("cm-fp");
+    const cmFn = document.getElementById("cm-fn");
+    const cmTp = document.getElementById("cm-tp");
+    
+    // Table
+    const streamBody = document.getElementById("traffic-stream-body");
+    const valPassed = document.getElementById("stat-passed");
+    const valDropped = document.getElementById("stat-dropped");
+    
+    let isTraining = false;
+    let isSimulating = false;
+    let eventSource = null;
+    let passedCount = 0;
+    let droppedCount = 0;
+    
+    /**
+     * Train API Integration
+     */
+    btnTrain.addEventListener("click", async () => {
+        if (isTraining || isSimulating) return;
+        
+        // Update UI
+        isTraining = true;
+        btnTrain.disabled = true;
+        btnSimulate.disabled = true;
+        loader.classList.remove("hidden");
+        
+        statusDot.className = "status-dot offline";
+        statusText.innerText = "Training Pipeline...";
+        statusText.style.color = "var(--primary)";
+        
+        try {
+            const res = await fetch("/api/train", { method: "POST" });
+            const data = await res.json();
+            
+            if (data.status === "success") {
+                // Update Metrics visually
+                animateValueUI(valAcc, data.accuracy * 100, "%");
+                animateValueUI(valFpr, data.fpr * 100, "%", 4);
+                
+                cmTn.innerText = data.confusion_matrix.tn.toLocaleString();
+                cmFp.innerText = data.confusion_matrix.fp.toLocaleString();
+                cmFn.innerText = data.confusion_matrix.fn.toLocaleString();
+                cmTp.innerText = data.confusion_matrix.tp.toLocaleString();
+                
+                // Unlock Simulation
+                btnSimulate.disabled = false;
+                
+                // Status
+                statusDot.className = "status-dot online";
+                statusText.innerText = "Engine Online & Ready";
+                statusText.style.color = "var(--success)";
+            }
+        } catch (error) {
+            console.error(error);
+            statusText.innerText = "Training Failed";
+            statusText.style.color = "var(--danger)";
+        } finally {
+            isTraining = false;
+            btnTrain.disabled = false;
+            loader.classList.add("hidden");
+        }
+    });
+    
+    /**
+     * Live Simulation Stream Integration (SSE)
+     */
+    btnSimulate.addEventListener("click", () => {
+        if (isSimulating) {
+            // Stop Simulation
+            if(eventSource) eventSource.close();
+            stopSimulationUI();
+            return;
+        }
+        
+        // Start Simulation
+        isSimulating = true;
+        btnTrain.disabled = true;
+        btnSimulate.innerText = "Halt Scrubbing Shield";
+        btnSimulate.classList.remove("secondary-btn");
+        btnSimulate.classList.add("primary-btn");
+        livePulse.classList.remove("hidden");
+        
+        // Reset table
+        streamBody.innerHTML = "";
+        passedCount = 0;
+        droppedCount = 0;
+        valPassed.innerText = "0";
+        valDropped.innerText = "0";
+        
+        // Open SSE connection
+        eventSource = new EventSource("/api/simulate");
+        
+        eventSource.onmessage = function(event) {
+            const rawData = JSON.parse(event.data);
+            
+            if (rawData.status === "done" || rawData.error) {
+                if (rawData.error) console.error(rawData.error);
+                eventSource.close();
+                stopSimulationUI();
+                return;
+            }
+            
+            appendRowWithAnimation(rawData);
+        };
+        
+        eventSource.onerror = function(err) {
+            console.error("SSE Error:", err);
+            eventSource.close();
+            stopSimulationUI();
+        };
+    });
+    
+    function stopSimulationUI() {
+        isSimulating = false;
+        btnTrain.disabled = false;
+        btnSimulate.innerText = "Deploy eBPF Scrubbing Shield";
+        btnSimulate.classList.remove("primary-btn");
+        btnSimulate.classList.add("secondary-btn");
+        livePulse.classList.add("hidden");
+    }
+    
+    /**
+     * Appends a row visually mirroring true edge-logging speeds
+     */
+    function appendRowWithAnimation(pkt) {
+        const actionLabel = pkt.predicted === 1 ? 'DROPPED' : 'PASSED';
+        const actionClass = pkt.predicted === 1 ? 'action-dropped' : 'action-passed';
+        
+        const actualLabel = pkt.actual_label === 1 ? 'DDoS' : 'Norm';
+        const actualClass = pkt.actual_label === 1 ? 'actual-ddos' : 'actual-norm';
+        
+        const tr = document.createElement("tr");
+        tr.className = "new-row";
+        
+        tr.innerHTML = `
+            <td>#${String(pkt.id).padStart(3, '0')}</td>
+            <td>${pkt.packet_size.toFixed(1)}</td>
+            <td>${pkt.inter_arrival_time.toFixed(1)}</td>
+            <td>${pkt.variance.toFixed(2)}</td>
+            <td class="${actualClass}">${actualLabel}</td>
+            <td><span class="badge ${actionClass}">${actionLabel}</span></td>
+        `;
+        
+        // Insert at beginning to scroll up
+        streamBody.insertBefore(tr, streamBody.firstChild);
+        
+        // Keep row count manageable
+        if (streamBody.childElementCount > 30) {
+            streamBody.removeChild(streamBody.lastChild);
+        }
+        
+        // Update stats
+        if (pkt.predicted === 1) {
+            droppedCount++;
+            valDropped.innerText = droppedCount;
+        } else {
+            passedCount++;
+            valPassed.innerText = passedCount;
+        }
+    }
+    
+    /**
+     * Counter Animation for Metrics
+     */
+    function animateValueUI(obj, targetValue, suffix, decimals=2, duration=1000) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            
+            const currentVal = progress * targetValue;
+            obj.innerHTML = currentVal.toFixed(decimals) + suffix;
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerHTML = targetValue.toFixed(decimals) + suffix;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+});

@@ -1,0 +1,34 @@
+1. Training the AI Model (with labels)...
+[*] Loading real dataset from archive/ folder...
+[*] Training Random Forest Detection Engine...
+
+--- Model Evaluation ---
+Overall Accuracy: 99.53%
+
+Confusion Matrix:
+                Predicted Normal | Predicted Malicious
+Actual Normal    [728           ] | [2                ]
+Actual Malicious [5             ] | [765              ]
+
+[!] Target Metric Highlight:
+--> False Positive Rate (FPR): 0.2740%
+--> Thesis Proved: Legitimate player packets have a near-zero likelihood of being dropped!
+
+=======================================================
+2. Testing the AI on brand-new, completely UNDECLARED data!
+=======================================================
+
+Here are 4 raw packets arriving at our game server. Notice there is NO label column.
+   packet_size  inter_arrival_time_ms  entropy  variance
+0         65.0                 48.000      4.4       2.1
+1       1400.0                  0.010      7.8     950.0
+2         60.0                 52.000      4.6       1.9
+3       1250.0                  0.005      7.9    1100.0
+
+Scaling the packets and feeding them into the AI...
+
+--- AI PREDICTIONS ---
+Packet 1: AI Predicted [0] -> Passed. Looks like a legitimate gamer.
+Packet 2: AI Predicted [1] -> Dropped! Looks like a DDoS Botnet.
+Packet 3: AI Predicted [0] -> Passed. Looks like a legitimate gamer.
+Packet 4: AI Predicted [1] -> Dropped! Looks like a DDoS Botnet.

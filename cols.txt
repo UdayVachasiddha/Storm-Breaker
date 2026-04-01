@@ -1,0 +1,16 @@
+UDP Rows:
+   Avg Packet Size  ...  Packet Length Variance
+0            401.5  ...             1130.142822
+1            601.5  ...                0.000000
+2            574.5  ...                0.000000
+3            432.0  ...              456.299988
+4            442.0  ...             1044.300049
+
+[5 rows x 3 columns]
+
+Labels in UDP-training:
+Label
+UDP       14792
+Benign     2833
+MSSQL       145
+Name: count, dtype: int64
