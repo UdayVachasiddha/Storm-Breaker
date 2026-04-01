@@ -1,15 +1,19 @@
 :root {
-  --bg-color: #0d1117;
-  --panel-bg: rgba(22, 27, 34, 0.7);
-  --border-color: rgba(48, 54, 61, 0.6);
-  --primary: #58a6ff;
-  --primary-hover: #3182ce;
-  --success: #3fb950;
-  --danger: #f85149;
-  --danger-hover: #da3633;
-  --text-main: #c9d1d9;
-  --text-muted: #8b949e;
-  --glass-blur: blur(16px);
+  --bg-color: #050511;
+  --panel-bg: rgba(15, 20, 35, 0.55);
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Vibrant Modern Colors */
+  --primary: #00f2fe;
+  --primary-hover: #4facfe;
+  --success: #00ff87;
+  --success-bg: rgba(0, 255, 135, 0.1);
+  --danger: #ff0055;
+  --danger-bg: rgba(255, 0, 85, 0.1);
+
+  --text-main: #ffffff;
+  --text-muted: #8b9bb4;
+  --glass-blur: blur(24px);
 }
 
 body {
@@ -18,10 +22,39 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
-  background-image: radial-gradient(circle at top right, rgba(88, 166, 255, 0.05), transparent 40%),
-    radial-gradient(circle at bottom left, rgba(248, 81, 73, 0.05), transparent 40%);
-  background-attachment: fixed;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.glow-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at top right, rgba(0, 242, 254, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at bottom left, rgba(255, 0, 85, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at center, rgba(138, 43, 226, 0.15) 0%, transparent 60%);
+  animation: bg-shift 15s ease-in-out infinite alternate;
+  filter: blur(50px);
+}
+
+@keyframes bg-shift {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1) translate(2%, 2%);
+  }
+
+  100% {
+    transform: scale(1) translate(-2%, -2%);
+  }
 }
 
 /* Glassmorphism Classes */
@@ -30,9 +63,16 @@ body {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.5);
   padding: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.7);
 }
 
 /* Layout */
@@ -69,18 +109,19 @@ body {
 
 .header-content h1 {
   margin: 0 0 0.5rem 0;
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
-  background: linear-gradient(120deg, var(--text-main), var(--primary));
+  background: linear-gradient(120deg, #fff, var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.3));
 }
 
 .header-content p {
   margin: 0;
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 /* Status Indicator */
@@ -89,77 +130,82 @@ body {
   align-items: center;
   gap: 0.5rem;
   font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 8px 16px;
-  border-radius: 20px;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 30px;
   border: 1px solid var(--border-color);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .status-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
 }
 
 .status-dot.offline {
   background-color: var(--danger);
-  box-shadow: 0 0 8px var(--danger);
+  box-shadow: 0 0 12px var(--danger);
 }
 
 .status-dot.online {
   background-color: var(--success);
-  box-shadow: 0 0 8px var(--success);
+  box-shadow: 0 0 12px var(--success);
 }
 
 /* Buttons */
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
   margin-top: 1rem;
 }
 
 button {
-  padding: 14px 24px;
+  padding: 16px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 800;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .primary-btn {
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: white;
-  box-shadow: 0 4px 15px rgba(88, 166, 255, 0.2);
+  color: #000;
+  box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
 }
 
 .primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(0, 242, 254, 0.6);
 }
 
 .secondary-btn {
-  background: rgba(248, 81, 73, 0.1);
+  background: var(--danger-bg);
   color: var(--danger);
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  backdrop-filter: blur(10px);
 }
 
 .secondary-btn:not(:disabled):hover {
-  background: rgba(248, 81, 73, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(248, 81, 73, 0.2);
+  background: rgba(255, 0, 85, 0.2);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(255, 0, 85, 0.4);
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+  filter: grayscale(1);
 }
 
 /* Loader */
@@ -167,16 +213,17 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   color: var(--primary);
   font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(88, 166, 255, 0.3);
+  width: 24px;
+  height: 24px;
+  border: 4px solid rgba(0, 242, 254, 0.2);
   border-radius: 50%;
   border-top-color: var(--primary);
   animation: spin 1s ease-in-out infinite;
@@ -197,14 +244,14 @@ button:disabled {
 .control-panel h2,
 .sim-header h2 {
   margin: 0 0 0.5rem 0;
-  font-size: 1.3rem;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.5rem;
+  font-size: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.8rem;
 }
 
 .subtitle {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin-top: -0.2rem;
   margin-bottom: 1rem;
 }
@@ -212,79 +259,110 @@ button:disabled {
 .metrics-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
-  gap: 1rem;
+  gap: 1.2rem;
   margin: 1.5rem 0;
 }
 
 .metric-card {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
   padding: 1.5rem;
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .highlight-card {
-  background: rgba(63, 185, 80, 0.05);
-  border-color: rgba(63, 185, 80, 0.3);
+  background: var(--success-bg);
+  border-color: rgba(0, 255, 135, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 255, 135, 0.1) 0%, transparent 60%);
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .metric-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  z-index: 1;
 }
 
 .metric-value {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 800;
   margin: 0.5rem 0;
   font-family: 'Fira Code', monospace;
+  z-index: 1;
 }
 
 .highlight-value {
   color: var(--success);
-  text-shadow: 0 0 15px rgba(63, 185, 80, 0.4);
+  text-shadow: 0 0 20px rgba(0, 255, 135, 0.6);
 }
 
 .metric-caption {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--success);
   margin: 0;
   text-align: center;
+  z-index: 1;
 }
 
 /* Confusion Matrix */
 .confusion-matrix h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .cm-grid {
   display: grid;
   grid-template-columns: auto 1fr 1fr;
-  gap: 4px;
+  gap: 8px;
   font-family: 'Fira Code', monospace;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .cm-cell {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 16px;
   text-align: center;
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.cm-cell:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .cm-cell.header {
-  font-weight: 600;
+  font-weight: 800;
   color: var(--primary);
-  background: rgba(88, 166, 255, 0.05);
+  background: rgba(0, 242, 254, 0.05);
+  border-color: rgba(0, 242, 254, 0.2);
 }
 
 .cm-cell.placeholder {
@@ -293,18 +371,20 @@ button:disabled {
 }
 
 .cm-cell.data {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
 .cm-cell.tn,
 .cm-cell.tp {
   color: var(--success);
+  text-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
 }
 
 .cm-cell.fp,
 .cm-cell.fn {
   color: var(--danger);
+  text-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
 }
 
 /* Simulation Area */
@@ -318,31 +398,36 @@ button:disabled {
   display: flex;
   align-items: center;
   color: var(--danger);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-family: 'Fira Code', monospace;
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  background: var(--danger-bg);
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 0, 85, 0.3);
 }
 
 .pulse-ring {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: var(--danger);
   border-radius: 50%;
-  margin-left: 10px;
+  margin-left: 12px;
   position: relative;
+  box-shadow: 0 0 8px var(--danger);
 }
 
 .pulse-ring::before {
   content: '';
   position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
   border-radius: 50%;
   border: 2px solid var(--danger);
-  animation: radar 1.5s linear infinite;
+  animation: radar 1.2s linear infinite;
 }
 
 @keyframes radar {
@@ -352,7 +437,7 @@ button:disabled {
   }
 
   100% {
-    transform: scale(1.8);
+    transform: scale(2.0);
     opacity: 0;
   }
 }
@@ -360,10 +445,11 @@ button:disabled {
 .table-container {
   height: 500px;
   overflow-y: auto;
-  margin-top: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 5px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Custom Scrollbar */
@@ -372,77 +458,106 @@ button:disabled {
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .traffic-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-family: 'Fira Code', monospace;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .traffic-table th {
-  background: rgba(22, 27, 34, 0.9);
-  padding: 12px 16px;
+  background: rgba(15, 20, 35, 0.95);
+  padding: 16px;
   text-align: left;
   position: sticky;
   top: 0;
   z-index: 10;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
+  color: var(--primary);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
 }
 
 .traffic-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease;
+}
+
+.traffic-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .traffic-table tr.new-row {
-  animation: slideInFade 0.3s ease-out forwards;
+  animation: slideInFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes slideInFade {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateY(-10px);
+    background-color: rgba(0, 242, 254, 0.1);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
+    background-color: transparent;
   }
 }
 
 /* Status Badges in Table */
 .badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 800;
   font-size: 0.75rem;
   display: inline-block;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .action-passed {
-  background: rgba(63, 185, 80, 0.1);
+  background: var(--success-bg);
   color: var(--success);
-  border: 1px solid rgba(63, 185, 80, 0.3);
+  border: 1px solid rgba(0, 255, 135, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.1);
 }
 
 .action-dropped {
-  background: rgba(248, 81, 73, 0.1);
+  background: var(--danger-bg);
   color: var(--danger);
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  border: 1px solid rgba(255, 0, 85, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.1);
+  animation: pulse-danger 2s infinite;
+}
+
+@keyframes pulse-danger {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+  }
+
+  100% {
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.1);
+  }
 }
 
 .actual-norm {
@@ -457,25 +572,28 @@ button:disabled {
 .stats-bar {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
+  gap: 3rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
   border: 1px solid var(--border-color);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .stat span {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-family: 'Fira Code', monospace;
-  font-weight: bold;
-  margin-right: 0.5rem;
+  font-weight: 800;
+  margin-right: 0.8rem;
 }
 
 #stat-passed {
   color: var(--success);
+  text-shadow: 0 0 10px rgba(0, 255, 135, 0.4);
 }
 
 #stat-dropped {
   color: var(--danger);
+  text-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
 }

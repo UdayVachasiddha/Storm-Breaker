@@ -8,6 +8,8 @@ from sse_starlette.sse import EventSourceResponse
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix
 
+from whatsapp import send_ddos_alert
+
 from ddos_mitigation_simulation import (
     generate_normal_traffic,
     load_and_filter_botnet_data,
@@ -84,6 +86,10 @@ async def simulate_traffic_stream():
         features = mixed_stream.drop('label', axis=1)
         true_labels = mixed_stream['label']
         
+        dropped_count = 0
+        passed_count = 0
+        alert_sent = False
+        
         for i in range(len(features)):
             packet_features = GLOBAL_SCALER.transform([features.iloc[i].values])
             prediction = GLOBAL_MODEL.predict(packet_features)[0]
@@ -98,6 +104,16 @@ async def simulate_traffic_stream():
                 "actual_label": actual,
                 "predicted": int(prediction)
             }
+            
+            if int(prediction) == 1:
+                dropped_count += 1
+            else:
+                passed_count += 1
+                
+            # Dynamic DDoS Threshold Alert!
+            if dropped_count >= 15 and not alert_sent:
+                send_ddos_alert(dropped_packets=dropped_count, passed_packets=passed_count)
+                alert_sent = True
             
             yield {"data": json.dumps(packet_data)}
             await asyncio.sleep(0.3) # Control speed of visualizer streaming
