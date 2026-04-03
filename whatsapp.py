@@ -65,7 +65,7 @@ def send_ddos_alert(dropped_packets, passed_packets):
             ADMIN_NUMBER = "+917208593024" # REPLACE WITH YOUR NUMBER
             
             print("[WhatsApp Engine] Opening browser to dispatch PyWhatKit alert...")
-            pywhatkit.sendwhatmsg(ADMIN_NUMBER, message, h, m, wait_time=15, tab_close=True, close_time=5)
+            pywhatkit.sendwhatmsg(ADMIN_NUMBER, message, h, m, wait_time=5, tab_close=True, close_time=5)
         except Exception as e:
             print(f"[WhatsApp Engine] PyWhatKit Error: {e}")
         

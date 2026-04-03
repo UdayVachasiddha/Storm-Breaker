@@ -1,5 +1,6 @@
 import asyncio
 import json
+import random
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -66,9 +67,10 @@ async def train_model():
     }
 
 @app.get("/api/simulate")
-async def simulate_traffic_stream():
+async def simulate_traffic_stream(target_node: str = "ALL"):
     """
     Endpoint that streams Server-Sent Events showing the edge mitigation.
+    Accepts target_node to selectively filter Anycast routing.
     """
     global GLOBAL_MODEL, GLOBAL_SCALER
     
@@ -76,7 +78,8 @@ async def simulate_traffic_stream():
         return {"error": "Model not trained yet."}
 
     async def event_generator():
-        stream_samples = 40
+        # Increased samples so single-node filtering still has enough traffic to trigger WhatsApp
+        stream_samples = 150
         normal_stream = generate_normal_traffic(num_samples=stream_samples // 2)
         malicious_stream = load_and_filter_botnet_data(num_samples=stream_samples - (stream_samples // 2))
         
@@ -90,13 +93,25 @@ async def simulate_traffic_stream():
         passed_count = 0
         alert_sent = False
         
+        # Anycast simulated edge pools
+        anycast_nodes = ["BOM-Edge", "FRA-Edge", "TYO-Edge", "SGP-Edge"]
+        
         for i in range(len(features)):
+            # Randomly simulate Anycast distribution based on presumed geography
+            assigned_node = random.choices(anycast_nodes, weights=[0.4, 0.25, 0.2, 0.15])[0]
+            
+            # If user wants to simulate being a specific node (e.g., BOM-Edge), skip packets routed elsewhere
+            if target_node != "ALL" and assigned_node != target_node:
+                # Fast forward time mentally; this packet hit a different global datacenter.
+                continue
+                
             packet_features = GLOBAL_SCALER.transform([features.iloc[i].values])
             prediction = GLOBAL_MODEL.predict(packet_features)[0]
             actual = int(true_labels.iloc[i])
             
             packet_data = {
                 "id": i+1,
+                "node": assigned_node,
                 "packet_size": round(float(features.iloc[i]['packet_size']), 2),
                 "inter_arrival_time": round(float(features.iloc[i]['inter_arrival_time_ms']), 2),
                 "entropy": round(float(features.iloc[i]['entropy']), 2),

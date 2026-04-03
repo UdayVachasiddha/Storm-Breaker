@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * Train API Integration
      */
     btnTrain.addEventListener("click", async () => {
+        btnTrain.blur(); // Remove focus to prevent pywhatkit keyboard interference
         if (isTraining || isSimulating) return;
         
         // Update UI
@@ -79,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * Live Simulation Stream Integration (SSE)
      */
     btnSimulate.addEventListener("click", () => {
+        btnSimulate.blur(); // Remove focus to prevent pywhatkit keyboard interference
         if (isSimulating) {
             // Stop Simulation
             if(eventSource) eventSource.close();
@@ -101,8 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
         valPassed.innerText = "0";
         valDropped.innerText = "0";
         
-        // Open SSE connection
-        eventSource = new EventSource("/api/simulate");
+        // Check Node Filter Value
+        const nodeFilter = document.getElementById("node-filter").value;
+        
+        // Open SSE connection with the filter parameter
+        eventSource = new EventSource("/api/simulate?target_node=" + nodeFilter);
         
         eventSource.onmessage = function(event) {
             const rawData = JSON.parse(event.data);
@@ -137,22 +142,30 @@ document.addEventListener("DOMContentLoaded", () => {
      * Appends a row visually mirroring true edge-logging speeds
      */
     function appendRowWithAnimation(pkt) {
-        const actionLabel = pkt.predicted === 1 ? 'DROPPED' : 'PASSED';
-        const actionClass = pkt.predicted === 1 ? 'action-dropped' : 'action-passed';
-        
-        const actualLabel = pkt.actual_label === 1 ? 'DDoS' : 'Norm';
-        const actualClass = pkt.actual_label === 1 ? 'actual-ddos' : 'actual-norm';
-        
         const tr = document.createElement("tr");
-        tr.className = "new-row";
+        tr.className = 'new-row';
+        
+        let actualClass = pkt.actual_label === 1 ? 'actual-ddos' : 'actual-norm';
+        let actualText = pkt.actual_label === 1 ? 'DDoS' : 'Norm';
+        
+        let actionClass = pkt.predicted === 1 ? 'action-dropped' : 'action-passed';
+        let actionText = pkt.predicted === 1 ? 'DROPPED' : 'PASSED';
+        
+        // Custom CSS class for Anycast Nodes
+        const nodeLabel = pkt.node;
+        let nodeClass = 'node-bom';
+        if (nodeLabel.includes('FRA')) nodeClass = 'node-fra';
+        if (nodeLabel.includes('TYO')) nodeClass = 'node-tyo';
+        if (nodeLabel.includes('SGP')) nodeClass = 'node-sgp';
         
         tr.innerHTML = `
             <td>#${String(pkt.id).padStart(3, '0')}</td>
+            <td><span class="node-badge ${nodeClass}">${nodeLabel}</span></td>
             <td>${pkt.packet_size.toFixed(1)}</td>
             <td>${pkt.inter_arrival_time.toFixed(1)}</td>
             <td>${pkt.variance.toFixed(2)}</td>
-            <td class="${actualClass}">${actualLabel}</td>
-            <td><span class="badge ${actionClass}">${actionLabel}</span></td>
+            <td class="${actualClass}">${actualText}</td>
+            <td><span class="badge ${actionClass}">${actionText}</span></td>
         `;
         
         // Insert at beginning to scroll up

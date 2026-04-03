@@ -84,19 +84,28 @@
       <!-- Live Simulation Stream -->
       <section class="right-panel">
         <div class="glass-panel simulation-panel">
-          <div class="sim-header">
-            <h2>Live Traffic Flow</h2>
-            <div class="live-pulse hidden" id="live-pulse">
-              <span>LIVE SCRUBBING</span>
-              <div class="pulse-ring"></div>
+            <div class="sim-header">
+              <h2><i class="fas fa-satellite-dish"></i> Live Traffic Flow</h2>
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <select id="node-filter" style="padding: 6px 12px; background: rgba(0,0,0,0.5); color: var(--primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; cursor: pointer;">
+                  <option value="ALL">Monitor: Entire Global Anycast Network</option>
+                  <option value="BOM-Edge" selected>Monitor: Local Mumbai Edge (BOM-Edge)</option>
+                  <option value="FRA-Edge">Monitor: Frankfurt Edge (FRA-Edge)</option>
+                  <option value="SGP-Edge">Monitor: Singapore Edge (SGP-Edge)</option>
+                  <option value="TYO-Edge">Monitor: Tokyo Edge (TYO-Edge)</option>
+                </select>
+                <div class="live-pulse hidden" id="live-pulse">
+                  SIMULATING EBPF INTERCEPT <div class="pulse-ring"></div>
+                </div>
+              </div>
             </div>
-          </div>
 
           <div class="table-container">
             <table class="traffic-table">
               <thead>
                 <tr>
                   <th>Packet #</th>
+                  <th>Anycast Route</th>
                   <th>Size (B)</th>
                   <th>Tick (ms)</th>
                   <th>Variance</th>
