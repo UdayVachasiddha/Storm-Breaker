@@ -50,7 +50,7 @@ def send_ddos_alert(dropped_packets, passed_packets):
         # -------------------------------------------------------------------------
         # OPTION B: Using PyWhatKit (Browser Automation)
         # -------------------------------------------------------------------------
-        """
+        
         import pywhatkit
         from datetime import datetime
         try:
@@ -61,19 +61,14 @@ def send_ddos_alert(dropped_packets, passed_packets):
                 m -= 60
                 h = (h + 1) % 24
                 
-            ADMIN_NUMBER = "+1234567890" # Your phone number here
+            # Put the target phone number here
+            ADMIN_NUMBER = "+917208593024" # REPLACE WITH YOUR NUMBER
             
             print("[WhatsApp Engine] Opening browser to dispatch PyWhatKit alert...")
-            pywhatkit.sendwhatmsg(ADMIN_NUMBER, message, h, m, wait_time=15, tab_close=True)
+            pywhatkit.sendwhatmsg(ADMIN_NUMBER, message, h, m, wait_time=15, tab_close=True, close_time=5)
         except Exception as e:
             print(f"[WhatsApp Engine] PyWhatKit Error: {e}")
-        """
         
-        # -------------------------------------------------------------------------
-        # SIMULATION FALLBACK: Just printing out the success directly for the Thesis Demo
-        # -------------------------------------------------------------------------
-        time.sleep(1) # simulate network call
-        print("[🔔 LOCAL DEV ALERT 🔔] -> simulated successful WhatsApp delivery to Admin.")
 
     # Spawn thread to avoid blocking the FastAPI SSE loop
     thread = threading.Thread(target=_send_alert, daemon=True)
