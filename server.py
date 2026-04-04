@@ -28,7 +28,7 @@ GLOBAL_SCALER = None
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
-    with open("static/index.html", "r") as f:
+    with open("static/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 @app.post("/api/train")
@@ -67,10 +67,11 @@ async def train_model():
     }
 
 @app.get("/api/simulate")
-async def simulate_traffic_stream(target_node: str = "ALL"):
+async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "true"):
     """
     Endpoint that streams Server-Sent Events showing the edge mitigation.
     Accepts target_node to selectively filter Anycast routing.
+    Accepts whatsapp to selectively trigger pywhatkit.
     """
     global GLOBAL_MODEL, GLOBAL_SCALER
     
@@ -127,7 +128,8 @@ async def simulate_traffic_stream(target_node: str = "ALL"):
                 
             # Dynamic DDoS Threshold Alert!
             if dropped_count >= 15 and not alert_sent:
-                send_ddos_alert(dropped_packets=dropped_count, passed_packets=passed_count)
+                if whatsapp.lower() == "true":
+                    send_ddos_alert(dropped_packets=dropped_count, passed_packets=passed_count)
                 alert_sent = True
             
             yield {"data": json.dumps(packet_data)}

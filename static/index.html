@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 
@@ -42,6 +43,14 @@
             <button id="btn-train" class="primary-btn">Compute Hybrid Pipeline & Train</button>
             <button id="btn-simulate" class="secondary-btn" disabled>Deploy eBPF Scrubbing Shield</button>
           </div>
+          
+          <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: flex-start;">
+             <label style="display:flex; align-items:center; gap:0.5rem; cursor: pointer; font-size: 0.95rem; color: var(--text-main); font-weight: 600;">
+               <input type="checkbox" id="whatsapp-toggle" checked style="accent-color: #00ff87; width: 18px; height: 18px; cursor: pointer;">
+               <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.15rem;"></i> WhatsApp Admin Alerts (Instant Edition)
+             </label>
+          </div>
+
           <div id="training-loader" class="loader hidden">
             <div class="spinner"></div>
             <span>Training on 5,000 synthetic flows...</span>

@@ -103,11 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
         valPassed.innerText = "0";
         valDropped.innerText = "0";
         
-        // Check Node Filter Value
+        // Check Node Filter & WhatsApp Values
         const nodeFilter = document.getElementById("node-filter").value;
+        const whatsappToggle = document.getElementById("whatsapp-toggle").checked;
         
-        // Open SSE connection with the filter parameter
-        eventSource = new EventSource("/api/simulate?target_node=" + nodeFilter);
+        // Open SSE connection with the filter parameters
+        eventSource = new EventSource(`/api/simulate?target_node=${nodeFilter}&whatsapp=${whatsappToggle}`);
         
         eventSource.onmessage = function(event) {
             const rawData = JSON.parse(event.data);
