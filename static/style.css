@@ -520,6 +520,20 @@ button:disabled {
   }
 }
 
+/* Anycast Node Badges */
+.node-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.node-bom { background: rgba(138, 43, 226, 0.2); color: #b16dff; border: 1px solid rgba(138, 43, 226, 0.4); }
+.node-fra { background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.4); }
+.node-tyo { background: rgba(255, 0, 85, 0.2); color: #ff3377; border: 1px solid rgba(255, 0, 85, 0.4); }
+.node-sgp { background: rgba(0, 255, 135, 0.2); color: #00ff87; border: 1px solid rgba(0, 255, 135, 0.4); }
+
 /* Status Badges in Table */
 .badge {
   padding: 6px 12px;

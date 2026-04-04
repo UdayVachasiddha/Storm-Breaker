@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 
@@ -42,6 +43,14 @@
             <button id="btn-train" class="primary-btn">Compute Hybrid Pipeline & Train</button>
             <button id="btn-simulate" class="secondary-btn" disabled>Deploy eBPF Scrubbing Shield</button>
           </div>
+          
+          <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: flex-start;">
+             <label style="display:flex; align-items:center; gap:0.5rem; cursor: pointer; font-size: 0.95rem; color: var(--text-main); font-weight: 600;">
+               <input type="checkbox" id="whatsapp-toggle" checked style="accent-color: #00ff87; width: 18px; height: 18px; cursor: pointer;">
+               <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.15rem;"></i> WhatsApp Admin Alerts (Instant Edition)
+             </label>
+          </div>
+
           <div id="training-loader" class="loader hidden">
             <div class="spinner"></div>
             <span>Training on 5,000 synthetic flows...</span>
@@ -84,19 +93,28 @@
       <!-- Live Simulation Stream -->
       <section class="right-panel">
         <div class="glass-panel simulation-panel">
-          <div class="sim-header">
-            <h2>Live Traffic Flow</h2>
-            <div class="live-pulse hidden" id="live-pulse">
-              <span>LIVE SCRUBBING</span>
-              <div class="pulse-ring"></div>
+            <div class="sim-header">
+              <h2><i class="fas fa-satellite-dish"></i> Live Traffic Flow</h2>
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <select id="node-filter" style="padding: 6px 12px; background: rgba(0,0,0,0.5); color: var(--primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; cursor: pointer;">
+                  <option value="ALL">Monitor: Entire Global Anycast Network</option>
+                  <option value="BOM-Edge" selected>Monitor: Local Mumbai Edge (BOM-Edge)</option>
+                  <option value="FRA-Edge">Monitor: Frankfurt Edge (FRA-Edge)</option>
+                  <option value="SGP-Edge">Monitor: Singapore Edge (SGP-Edge)</option>
+                  <option value="TYO-Edge">Monitor: Tokyo Edge (TYO-Edge)</option>
+                </select>
+                <div class="live-pulse hidden" id="live-pulse">
+                  SIMULATING EBPF INTERCEPT <div class="pulse-ring"></div>
+                </div>
+              </div>
             </div>
-          </div>
 
           <div class="table-container">
             <table class="traffic-table">
               <thead>
                 <tr>
                   <th>Packet #</th>
+                  <th>Anycast Route</th>
                   <th>Size (B)</th>
                   <th>Tick (ms)</th>
                   <th>Variance</th>

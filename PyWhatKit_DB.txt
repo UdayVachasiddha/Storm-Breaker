@@ -1,0 +1,35 @@
+Date: 3/4/2026
+Time: 11:17
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 14 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:18
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 14 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:19
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 16 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:30
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 11 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:31
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 15 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:56
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 21 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
+Date: 3/4/2026
+Time: 11:57
+Phone Number: +917208593024
+Message: 🚨 *CRITICAL SERVER ALERT* 🚨Volumetric L4 DDoS Attack Detected!Edge-Scrubbing Pipeline active.🛡️ Action: DROPPED 15 malicious packets.✅ Action: PASSED 11 legitimate packets.Status: Game server maintained at 99.2% Accuracy.
+--------------------
