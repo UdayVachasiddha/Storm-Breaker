@@ -47,7 +47,7 @@ def main():
     # 1. Confusion Matrix Heatmap
     # =======================================================
     print("[*] Generating Confusion Matrix...")
-    cm = confusion_matrix(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred, labels=[0, 1])
     
     plt.figure(figsize=(8, 6))
     ax = sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
