@@ -174,7 +174,7 @@ def train_detection_model(X, y):
     
     # Evaluation Metrics
     acc = accuracy_score(y_test, predictions)
-    cm = confusion_matrix(y_test, predictions)
+    cm = confusion_matrix(y_test, predictions, labels=[0, 1])
     
     print("\n--- Model Evaluation ---")
     print(f"Overall Accuracy: {acc * 100:.2f}%")

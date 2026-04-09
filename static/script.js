@@ -16,15 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const cmTp = document.getElementById("cm-tp");
     
     // Table
-    const streamBody = document.getElementById("traffic-stream-body");
     const valPassed = document.getElementById("stat-passed");
     const valDropped = document.getElementById("stat-dropped");
+    const streamBody = document.getElementById("traffic-stream-body");
+    const cmLiveTag = document.getElementById("cm-live-tag");
     
     let isTraining = false;
     let isSimulating = false;
     let eventSource = null;
     let passedCount = 0;
     let droppedCount = 0;
+
+    // Live Matrix Counters
+    let liveTn = 0, liveFp = 0, liveFn = 0, liveTp = 0;
     
     /**
      * Train API Integration
@@ -100,8 +104,18 @@ document.addEventListener("DOMContentLoaded", () => {
         streamBody.innerHTML = "";
         passedCount = 0;
         droppedCount = 0;
+        liveTn = 0; liveFp = 0; liveFn = 0; liveTp = 0;
+        
         valPassed.innerText = "0";
         valDropped.innerText = "0";
+        cmTn.innerText = "0";
+        cmFp.innerText = "0";
+        cmFn.innerText = "0";
+        cmTp.innerText = "0";
+        valAcc.innerText = "0.00%";
+        valFpr.innerText = "0.0000%";
+        
+        cmLiveTag.classList.remove("hidden");
         
         // Check Node Filter & WhatsApp Values
         const nodeFilter = document.getElementById("node-filter").value;
@@ -137,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSimulate.classList.remove("primary-btn");
         btnSimulate.classList.add("secondary-btn");
         livePulse.classList.add("hidden");
+        // We keep the Live tag visible so people know the metrics are from the LAST run.
     }
     
     /**
@@ -184,6 +199,32 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             passedCount++;
             valPassed.innerText = passedCount;
+        }
+
+        // --- LIVE CONFUSION MATRIX LOGIC ---
+        // actual_label: 0=Norm, 1=DDoS | predicted: 0=Norm, 1=DDoS
+        if (pkt.actual_label === 0 && pkt.predicted === 0) {
+            liveTn++;
+            cmTn.innerText = liveTn.toLocaleString();
+        } else if (pkt.actual_label === 0 && pkt.predicted === 1) {
+            liveFp++;
+            cmFp.innerText = liveFp.toLocaleString();
+        } else if (pkt.actual_label === 1 && pkt.predicted === 0) {
+            liveFn++;
+            cmFn.innerText = liveFn.toLocaleString();
+        } else if (pkt.actual_label === 1 && pkt.predicted === 1) {
+            liveTp++;
+            cmTp.innerText = liveTp.toLocaleString();
+        }
+
+        // --- LIVE CARD UPDATES ---
+        const total = liveTn + liveFp + liveFn + liveTp;
+        if (total > 0) {
+            const acc = ((liveTn + liveTp) / total) * 100;
+            const fpr = (liveFp / (liveFp + liveTn)) * 100 || 0;
+            
+            valAcc.innerText = acc.toFixed(2) + "%";
+            valFpr.innerText = fpr.toFixed(4) + "%";
         }
     }
     

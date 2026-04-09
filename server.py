@@ -51,7 +51,7 @@ async def train_model():
     
     predictions = rf_model.predict(X_test)
     acc = accuracy_score(y_test, predictions)
-    cm = confusion_matrix(y_test, predictions)
+    cm = confusion_matrix(y_test, predictions, labels=[0, 1])
     tn, fp, fn, tp = cm.ravel()
     fpr = float(fp / (fp + tn)) if (fp + tn) > 0 else 0.0
     
@@ -92,6 +92,11 @@ async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "tru
         
         dropped_count = 0
         passed_count = 0
+        # Backend Live Performance Counters (Scientific)
+        live_tn = 0
+        live_fp = 0
+        live_fn = 0
+        live_tp = 0
         alert_sent = False
         
         # Anycast simulated edge pools
@@ -109,6 +114,16 @@ async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "tru
             packet_features = GLOBAL_SCALER.transform([features.iloc[i].values])
             prediction = GLOBAL_MODEL.predict(packet_features)[0]
             actual = int(true_labels.iloc[i])
+            
+            # Update Live Matrix (actual: 0=Norm, 1=DDoS | prediction: 0=Norm, 1=DDoS)
+            if actual == 0 and int(prediction) == 0:
+                live_tn += 1
+            elif actual == 0 and int(prediction) == 1:
+                live_fp += 1
+            elif actual == 1 and int(prediction) == 0:
+                live_fn += 1
+            elif actual == 1 and int(prediction) == 1:
+                live_tp += 1
             
             packet_data = {
                 "id": i+1,
@@ -129,7 +144,17 @@ async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "tru
             # Dynamic DDoS Threshold Alert!
             if dropped_count >= 15 and not alert_sent:
                 if whatsapp.lower() == "true":
-                    send_ddos_alert(dropped_packets=dropped_count, passed_packets=passed_count)
+                    # --- LIVE CALCULATION (SAME AS FRONTEND) ---
+                    total = live_tn + live_fp + live_fn + live_tp
+                    accuracy = ((live_tn + live_tp) / total) * 100 if total > 0 else 0
+                    fpr = (live_fp / (live_fp + live_tn)) * 100 if (live_fp + live_tn) > 0 else 0
+                    
+                    send_ddos_alert(
+                        dropped_packets=dropped_count, 
+                        passed_packets=passed_count,
+                        accuracy=accuracy,
+                        fpr=fpr
+                    )
                 alert_sent = True
             
             yield {"data": json.dumps(packet_data)}

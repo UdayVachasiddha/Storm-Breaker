@@ -9,7 +9,7 @@ import webbrowser
 # This guarantees it opens instantly (under 2 seconds) and never crashes the server.
 # =======================================================================================
 
-def send_ddos_alert(dropped_packets, passed_packets):
+def send_ddos_alert(dropped_packets, passed_packets, accuracy, fpr):
     """
     Called by the main server when a DDoS attack volume crosses a critical threshold.
     """
@@ -21,7 +21,10 @@ def send_ddos_alert(dropped_packets, passed_packets):
             f"Edge-Scrubbing Pipeline active.\n\n"
             f"🛡️ Action: DROPPED {dropped_packets} malicious packets.\n"
             f"✅ Action: PASSED {passed_packets} legitimate packets.\n\n"
-            f"Status: Game server maintained at 99.2% Accuracy."
+            f"📈 Statistics at Trigger:\n"
+            f"- Accuracy: {accuracy:.2f}%\n"
+            f"- False Positive Rate: {fpr:.4f}%\n\n"
+            f"Status: Simulation running correctly."
         )
         print(f"\n[WhatsApp Engine] Preparing to dispatch WhatsApp alert instantly...")
         
