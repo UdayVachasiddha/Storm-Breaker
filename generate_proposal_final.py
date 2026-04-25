@@ -226,86 +226,98 @@ body(
 # ══════════════════════════════════════════════════════════════
 heading1('2.3  Work Breakdown Structure and Gantt Chart')
 
-body(
-    'The project is structured into six sequential phases. The table below presents the '
-    'Work Breakdown Structure (WBS) with each task, its deliverable, and estimated duration.'
-)
 
-# ── WBS Table ─────────────────────────────────────────────────
-wbs_headers = ['WBS ID', 'Task / Activity', 'Deliverable', 'Duration']
-wbs_rows = [
-    ['1.0', 'Project Initiation & Research',
-     'Literature review; technology selection confirmed', '2 weeks'],
-    ['1.1', 'Review DDoS mitigation literature',
-     'Annotated bibliography (Harvard)', '1 week'],
-    ['1.2', 'Select ML algorithm and justify design choices',
-     'Documented rationale in report', '1 week'],
-    ['2.0', 'Dataset Construction',
-     'Balanced hybrid dataset ready for training', '2 weeks'],
-    ['2.1', 'Ingest and parse botnet Parquet files',
-     'Cleaned DataFrame', '1 week'],
-    ['2.2', 'Generate synthetic player traffic (NumPy)',
-     'Merged, labelled dataset', '1 week'],
-    ['3.0', 'ML Model Development',
-     'Trained and validated Random Forest model', '2 weeks'],
-    ['3.1', 'Apply StandardScaler; train Random Forest',
-     'Serialised model object', '1 week'],
-    ['3.2', 'Evaluate: accuracy, FPR, AUC-ROC, feature importance',
-     'Evaluation graphs (PNG)', '1 week'],
-    ['4.0', 'Backend & Simulation Engine',
-     'FastAPI server with SSE streaming operational', '2 weeks'],
-    ['4.1', 'Build /api/train REST endpoint',
-     'Working training API', '1 week'],
-    ['4.2', 'Build async /api/simulate SSE generator',
-     'Continuous packet stream', '1 week'],
-    ['5.0', 'Frontend Dashboard',
-     'Live browser dashboard complete', '2 weeks'],
-    ['5.1', 'Design HTML layout and JS event handlers',
-     'Static dashboard UI', '1 week'],
-    ['5.2', 'Wire SSE stream to DOM; add node filtering',
-     'Real-time updating dashboard', '1 week'],
-    ['6.0', 'Alert Integration & Final Testing',
-     'WhatsApp alerts working; test results recorded', '1 week'],
-    ['6.1', 'Integrate PyWhatKit threshold alert',
-     'Alert fires correctly at threshold', '0.5 week'],
-    ['6.2', 'End-to-end system test; record metrics',
-     'Test case results table', '0.5 week'],
-    ['7.0', 'Report & Presentation',
-     'Final report (.docx) and slides', '2 weeks'],
+# ── WBS Table (3-column, phase-level, matching image format) ──
+wbs_data = [
+    (
+        'Phase 1: Research & Setup',
+        'Literature review on DDoS mitigation techniques; technology stack selection and justification; project scope definition.',
+        'Week 1 – Week 2',
+    ),
+    (
+        'Phase 2: Dataset Construction',
+        'Ingesting and parsing real-world botnet Parquet files; generating synthetic multiplayer player traffic using NumPy; merging and balancing the hybrid dataset.',
+        'Week 3 – Week 4',
+    ),
+    (
+        'Phase 3: Model Development',
+        'Applying StandardScaler normalisation; training the Random Forest classifier (100 estimators); evaluating accuracy, FPR, AUC-ROC, and feature importance; generating evaluation graphs.',
+        'Week 5 – Week 6',
+    ),
+    (
+        'Phase 4: Backend & Simulation Engine',
+        'Building the FastAPI ASGI server; implementing the POST /api/train REST endpoint; developing the async GET /api/simulate SSE generator for continuous packet streaming.',
+        'Week 7 – Week 8',
+    ),
+    (
+        'Phase 5: Frontend Dashboard',
+        'Designing the HTML layout and JavaScript event handlers; wiring the SSE stream to live DOM updates; adding geographic edge node filtering and real-time confusion matrix display.',
+        'Week 9 – Week 10',
+    ),
+    (
+        'Phase 6: Alert Integration & Testing',
+        'Integrating the PyWhatKit WhatsApp threshold alert; conducting end-to-end system testing; recording test case results and evaluation metrics.',
+        'Week 11',
+    ),
+    (
+        'Phase 7: Report & Presentation',
+        'Writing the final project report; producing evaluation write-up and appendices; preparing and rehearsing the presentation slides.',
+        'Week 12 – Week 13',
+    ),
 ]
 
-wbs_table = doc.add_table(rows=1 + len(wbs_rows), cols=4)
+wbs_table = doc.add_table(rows=1 + len(wbs_data), cols=3)
 wbs_table.style = 'Table Grid'
-wbs_hdr = wbs_table.rows[0].cells
-for i, h in enumerate(wbs_headers):
-    wbs_hdr[i].text = h
-    set_cell_bg(wbs_hdr[i], '1F3864')
-    for para in wbs_hdr[i].paragraphs:
+
+# Set column widths
+col_widths = [Inches(1.8), Inches(3.4), Inches(1.2)]
+for row in wbs_table.rows:
+    for i, cell in enumerate(row.cells):
+        cell.width = col_widths[i]
+
+# Header row
+hdr_cells = wbs_table.rows[0].cells
+for i, hdr_text in enumerate(['Phase', 'Tasks', 'Duration']):
+    hdr_cells[i].text = hdr_text
+    for para in hdr_cells[i].paragraphs:
         for run in para.runs:
             run.bold = True
             run.font.name = 'Times New Roman'
             run.font.size = Pt(11)
-            run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
-phase_ids = {'1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0'}
-for ri, row_data in enumerate(wbs_rows):
-    cells = wbs_table.rows[ri + 1].cells
-    is_phase = row_data[0] in phase_ids
-    for ci, val in enumerate(row_data):
-        cells[ci].text = val
-        if is_phase:
-            set_cell_bg(cells[ci], 'D6E4F0')
-        for para in cells[ci].paragraphs:
-            for run in para.runs:
-                run.bold = is_phase
-                run.font.name = 'Times New Roman'
-                run.font.size = Pt(10)
+# Data rows — alternate light shading for readability
+for ri, (phase, tasks, duration) in enumerate(wbs_data):
+    row_cells = wbs_table.rows[ri + 1].cells
+
+    # Phase cell — bold
+    row_cells[0].text = phase
+    for para in row_cells[0].paragraphs:
+        for run in para.runs:
+            run.bold = True
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(11)
+
+    # Tasks cell
+    row_cells[1].text = tasks
+    for para in row_cells[1].paragraphs:
+        for run in para.runs:
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(11)
+
+    # Duration cell
+    row_cells[2].text = duration
+    for para in row_cells[2].paragraphs:
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for run in para.runs:
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(11)
 
 doc.add_paragraph()
 cap = doc.add_paragraph('Table 2.1: Work Breakdown Structure')
 cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
 for run in cap.runs:
     run.italic = True; run.font.size = Pt(10); run.font.name = 'Times New Roman'
+
 
 doc.add_paragraph()
 
@@ -424,6 +436,6 @@ for ref in refs:
     run.font.size = Pt(12)
 
 # ── Save ──────────────────────────────────────────────────────
-out_path = r'd:\BITS Research paper\Proposal_Final.docx'
+out_path = r'd:\BITS Research paper\Proposal_Final_v2.docx'
 doc.save(out_path)
 print('Saved: ' + out_path)
