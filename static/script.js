@@ -143,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * Appends a row visually mirroring true edge-logging speeds
      */
     function appendRowWithAnimation(pkt) {
+        const tableContainer = document.querySelector(".table-container");
         const tr = document.createElement("tr");
         tr.className = 'new-row';
         
@@ -169,13 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <td><span class="badge ${actionClass}">${actionText}</span></td>
         `;
         
-        // Insert at beginning to scroll up
-        streamBody.insertBefore(tr, streamBody.firstChild);
+        // Append at the bottom — all traffic accumulates, no rows are dropped
+        streamBody.appendChild(tr);
         
-        // Keep row count manageable
-        if (streamBody.childElementCount > 30) {
-            streamBody.removeChild(streamBody.lastChild);
-        }
+        // Auto-scroll the container so the latest packet is always visible
+        tableContainer.scrollTop = tableContainer.scrollHeight;
         
         // Update stats
         if (pkt.predicted === 1) {
