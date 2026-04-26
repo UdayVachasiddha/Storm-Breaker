@@ -25,6 +25,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Global variables to hold model state
 GLOBAL_MODEL = None
 GLOBAL_SCALER = None
+GLOBAL_ACCURACY = None  # Stored after training so alerts can report real accuracy
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
@@ -33,7 +34,7 @@ async def get_index():
 
 @app.post("/api/train")
 async def train_model():
-    global GLOBAL_MODEL, GLOBAL_SCALER
+    global GLOBAL_MODEL, GLOBAL_SCALER, GLOBAL_ACCURACY
     
     # Generate balanced dataset for demo
     normal_data = generate_normal_traffic(num_samples=2500)
@@ -58,6 +59,7 @@ async def train_model():
     # Update globals so the simulate endpoint can use them
     GLOBAL_MODEL = rf_model
     GLOBAL_SCALER = trained_scaler
+    GLOBAL_ACCURACY = float(acc)  # Persist real accuracy for dynamic WhatsApp alerts
     
     return {
         "status": "success",
@@ -73,7 +75,7 @@ async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "tru
     Accepts target_node to selectively filter Anycast routing.
     Accepts whatsapp to selectively trigger pywhatkit.
     """
-    global GLOBAL_MODEL, GLOBAL_SCALER
+    global GLOBAL_MODEL, GLOBAL_SCALER, GLOBAL_ACCURACY
     
     if GLOBAL_MODEL is None or GLOBAL_SCALER is None:
         return {"error": "Model not trained yet."}
@@ -129,7 +131,15 @@ async def simulate_traffic_stream(target_node: str = "ALL", whatsapp: str = "tru
             # Dynamic DDoS Threshold Alert!
             if dropped_count >= 15 and not alert_sent:
                 if whatsapp.lower() == "true":
-                    send_ddos_alert(dropped_packets=dropped_count, passed_packets=passed_count)
+                    total_seen = dropped_count + passed_count
+                    send_ddos_alert(
+                        dropped_packets=dropped_count,
+                        passed_packets=passed_count,
+                        total_packets=total_seen,
+                        node=assigned_node,
+                        monitored_scope=target_node,
+                        model_accuracy=GLOBAL_ACCURACY
+                    )
                 alert_sent = True
             
             yield {"data": json.dumps(packet_data)}
