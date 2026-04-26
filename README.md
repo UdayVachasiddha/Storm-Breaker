@@ -1,7 +1,7 @@
 # ⚡ StormBreaker
 ### A Machine Learning–Driven, Real-Time Layer 4 DDoS Detection & Scrubbing Pipeline
 
-> **StormBreaker** — named for its core purpose: breaking the storm of malicious traffic before it ever reaches its target. Just as a storm is overwhelming in volume but predictable in pattern, volumetric DDoS attacks flood a network with sheer packet volume. StormBreaker intercepts that flood at the edge, classifies every packet with ML precision, and drops the attack traffic — leaving the storm shattered and the servers unscathed.
+> **Why StormBreaker?** A DDoS attack is exactly that — a storm. Overwhelming in volume, relentless in pace, and devastating if left unchecked. This system was built to stand in front of that storm and break it apart, packet by packet, before it ever reaches its target. The name reflects the core mission: intercept the flood at the edge, classify every packet with ML precision, drop the malicious, protect the legitimate — and leave the storm shattered.
 >
 > Simulates a production-grade, eBPF-inspired edge-scrubbing system for protecting multiplayer game servers against volumetric Layer 4 DDoS attacks, with near-zero false positives for legitimate player traffic.
 
@@ -325,7 +325,7 @@ Status: Game server maintained at 99.2% Accuracy.
 
 ## 🎓 Academic Context
 
-This project was developed as part of a research paper on the topic of:
+This project was developed as part of an academic research paper on the topic of:
 
 > *"Machine Learning-Based Real-Time Mitigation of Layer 4 Volumetric DDoS Attacks in Multiplayer Gaming Environments Using an Anycast Edge-Scrubbing Architecture"*
 
@@ -346,5 +346,5 @@ Dataset usage is subject to the [CIC-DDoS2019 terms of use](https://www.unb.ca/c
 ---
 
 <div align="center">
-  <sub>Built with ❤️ for academic research | StormBreaker — Break the Storm, Protect the Server.</sub>
+  <sub>⚡ StormBreaker — Break the Storm. Protect the Server.</sub>
 </div>
